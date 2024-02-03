@@ -1,19 +1,9 @@
 #!/usr/bin/env bash
-# configures any Ubuntu server
+# configures Ubuntu server
 # 8.8.8.8 resolves to facebook.com
 # 127.0.0.2 resolves to localhost
-sudo cp /etc/hosts /etc/hosts.bak
 
-sudo sed -i 's/127\.0\.0\.1\slocalhost/127.0.0.2 localhost/' /etc/hosts
-sudo sed -i 's/\(.*\)\bfacebook\.com\b/\1 8.8.8.8 facebook.com/' /etc/hosts
-
-if [ "$(sudo docker info -f '{{.Name}}')" == "docker" ]; then
-    echo "Docker is running"
-else
-    echo "Docker is not running. Please start Docker and run the script again."
-    exit 1
-fi
-
-sudo docker restart <your_docker_container_name>
-
-echo "Configuration completed. Please revert localhost to 127.0.0.1 if necessary."
+cp /etc/hosts ~/hosts.new
+echo "127.0.0.2         localhost" > ~/hosts.new
+echo "8.8.8.8           facebook.com" >> ~/hosts.new
+cp -f ~/hosts.new /etc/hosts
